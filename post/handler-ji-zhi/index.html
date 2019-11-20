@@ -1,0 +1,514 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gridea</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="http://localhost:4000/favicon.ico?v=1574221765178">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link href="https://cdn.remixicon.com/releases/v1.3.1/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+
+<link rel="stylesheet" href="http://localhost:4000/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Gridea - Atom Feed" href="http://localhost:4000/atom.xml">
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main px-4 flex flex-col lg:flex-row">
+      <div id="sidebar" class="sidebar-wrapper lg:static lg:w-1/4">
+  <div class="lg:sticky top-0">
+    <div class="sidebar-content">
+      <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
+        <i class="remixicon-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
+        <a href="http://localhost:4000">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="http://localhost:4000/images/avatar.png?v=1574221765178" alt="">
+        </a>
+        <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Gridea</h1>
+      </div>
+      
+        <div class="animated fadeInLeft" style="animation-delay: 0.4s">
+          <p class="my-4 text-gray-600 font-light hidden lg:block">
+            文章目录
+          </p>
+          <div class="toc-container hidden lg:block">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#handler">Handler</a>
+<ul>
+<li><a href="#%E5%88%9B%E5%BB%BA">创建</a></li>
+<li><a href="#%E6%B6%88%E6%81%AF%E5%85%A5%E9%98%9F">消息入队</a></li>
+</ul>
+</li>
+<li><a href="#message">Message</a></li>
+<li><a href="#messagequeue">MessageQueue</a></li>
+<li><a href="#looper">Looper</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+<li><a href="#%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F">内存泄漏</a>
+<ul>
+<li><a href="#%E5%BD%B1%E5%93%8D%E5%87%A0%E4%BD%95">影响几何</a></li>
+<li><a href="#%E8%A7%A3%E5%86%B3%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F">解决内存泄漏</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="menu-container">
+  <i class="remixicon-arrow-left-line text-2xl cursor-pointer animated fadeIn close-menu-btn" onclick="closeMenu()"></i>
+  <div>
+    
+      
+        <a href="http://localhost:4000/" class="menu" style="animation-delay: 0s">
+          首页
+        </a>
+      
+    
+      
+        <a href="http://localhost:4000/archives" class="menu" style="animation-delay: 0.2s">
+          归档
+        </a>
+      
+    
+      
+        <a href="http://localhost:4000/tags" class="menu" style="animation-delay: 0.4s">
+          标签
+        </a>
+      
+    
+      
+        <a href="http://localhost:4000/post/about" class="menu" style="animation-delay: 0.6000000000000001s">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="site-footer">
+    <div class="py-4 text-gray-700">Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a></div>
+    <a class="rss" href="http://localhost:4000/atom.xml" target="_blank">RSS</a>
+  </div>
+</div>
+<div class="mask" onclick="closeMenu()">
+</div>
+      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
+        <h1 class="text-3xl font-bold lg:mt-16">Handler</h1>
+        <div class="text-sm text-gray-700 lg:my-8">
+          2019-10-27 / 15 min read
+        </div>
+        
+        <div class="post-content yue">
+          <p>想象这样一个场景：我在淘宝下个订单，订单上包含我的姓名和地址、货物名称等，商家把订单打包后交给顺丰，顺丰把订单运到北京的集散中心，集散中心根据订单上的姓名和地址把货物派送给我。这是网购的流程，和Handler机制有异曲同工之处：</p>
+<!-- more -->
+<ol>
+<li>我 —— Handler，我下订单就是<code>handler.post()</code>，订单经过转运之后还是交给我；Handler发消息的最终目的地还是Handler的回调处理消息</li>
+<li>订单 —— Message，订单里包含收货地址，货物等，就是<code>msg.target</code>、<code>msg.what</code>、<code>msg.data</code>，Message是消息传递的介质</li>
+<li>顺丰 —— MessageQueue，这个很好理解，MessageQueue就是搬运工，根据消息的时间先后顺序分发消息</li>
+<li>集散中心 —— Looper，集散中心一直阻塞在这里等待新的货物到达，然后根据订单上的地址分发快递；Looper在for循环里一直获取最新的消息，如果有新消息就根据<code>msg.target</code>获取到handler然后调用<code>dispatchMessage()</code>把消息分发下去，最后触发Handler的Callback回调</li>
+</ol>
+<p>虽然这个例子并没有完美的契合Handler的运行机制（还有商家没有对应到Handler），但是对于理解Handler是十分有帮助的。</p>
+<p>Handler是Android应用层中广泛使用的多线程通信组件。Handler的用途表现在两个方面：（1）延时执行Runnable或延时发送Message；（2）线程间通信，给其他线程发消息，通知其他线程执行操作。</p>
+<p>整个Handler机制包含四个角色：</p>
+<ul>
+<li><code>Handler</code>，它是开发者直接操作的对象，它参与了消息分发流程中发送和处理消息的过程</li>
+<li><code>Message</code>，是消息传递的介质，传递的数据要包装成Message</li>
+<li><code>MessageQueue</code>，开发者几乎无法接触，它操作了消息的入队和出队</li>
+<li><code>Looper</code>，消息分发的核心，整个流程的心脏</li>
+</ul>
+<p>Android面试经常会问Handler，虽然这是一个老生常谈的话题，但真正搞明白还是要花费一番功夫，比如：</p>
+<ol>
+<li>Handler的运行机制是什么样的？</li>
+<li>子线程中可以直接创建Handler吗？</li>
+<li>官方文档为什么推荐使用Message.obtain()创建Message？</li>
+<li>Handler是怎么造成内存泄漏的？在Activity中创建Handler成员变量一定会造成内存泄漏吗？</li>
+</ol>
+<p>本文会一一解答上面的问题。现在先依次介绍Handler的四个角色，介绍完Handler的整个运行机制就会很清晰。</p>
+<h2 id="handler">Handler</h2>
+<p>Handler负责发送和处理Message。在哪个线程创建Handler，它就属于哪个线程；比如，在Activity中创建Handler实例，那么这个Handler就和主线程绑定了。当然，在Activity中创建Handler的匿名内部类变量可能会造成内存泄漏</p>
+<p>通过方法名和参数可以把Handler的发送操作分为两个系列：</p>
+<ol>
+<li><code>post()</code>系列方法，它是用来发送Runnable对象到MessageQueue中。如，<code>post(Runnable r)</code>、<code>postAtTime(Runnable r, long uptimeMillis)</code>、<code>postDelayed(Runnable r, long delayMillis)</code>等</li>
+<li><code>send()</code>系列方法，它是用来发送Message对象到MessageQueue中。如，<code>sendMessage(Message msg)</code>、<code>sendMessageAtTime(Message msg, long uptimeMillis)</code>、<code>sendMessageDelayed(Message msg, long delayMillis)</code>等<br>
+这两个系列的方法分别用来发送和处理Runnable和Message对象；Runnable在Handler中也会被包装成Message发送给MessageQueue。</li>
+</ol>
+<h3 id="创建">创建</h3>
+<p>Handler提供了多个构造函数，创建Handler最常用的构造函数是：</p>
+<pre><code>public Handler(@Nullable Callback callback) {
+    this(callback, false);
+}
+
+public Handler(@Nullable Callback callback, boolean async) {
+    …省略代码…
+    mLooper = Looper.myLooper();
+    if (mLooper == null) {
+        throw new RuntimeException(
+            “Can’t create handler inside thread “ + Thread.currentThread()
+                    + “ that has not called Looper.prepare()”);
+    }
+    mQueue = mLooper.mQueue;
+    mCallback = callback;
+    mAsynchronous = async;
+}
+</code></pre>
+<p>在构造函数中，Handler获取了mLooper和mQueue的实例。这也说明了，Handler和Looper绑定，Handler唯一对应一个Looper，Looper运行在哪个线程Handler就属于哪个线程。</p>
+<p>::子线程中可以直接创建Handler吗？::<br>
+”不可以，会抛出运行时异常，需要先调用<code>Looper.prepare()</code>。”当然，这是一个正确但不严谨的回答。</p>
+<pre><code>	val runnable = Runnable {  Handler()  }
+  Thread(runnable).start()
+</code></pre>
+<p>运行上面的代码会报错：<code>java.lang.RuntimeException: Can't create handler inside thread Thread[Thread-2,5,main] that has not called Looper.prepare()</code>。子线程没有运行Looper。</p>
+<p>确定不可以在子线程直接创建Handler吗？当然可以。Handler提供了下面的构造函数：</p>
+<pre><code>public Handler(@NonNull Looper looper, @Nullable Callback callback) {
+    this(looper, callback, false);
+}
+</code></pre>
+<p>给Handler的构造函数传Looper，Handler会绑定到Looper运行的线程：</p>
+<pre><code>val runnable = Runnable {
+		val handler = Handler(Looper.getMainLooper())
+		handler.post { //更新UI }
+}
+Thread(runnable).start()
+</code></pre>
+<p>通过这种方式创建的<code>handler</code>运行在主线程，<code>handler.post(Runnable)</code>就可以在该Runnable中直接对UI进行更新。</p>
+<p>子线程创建Handler的另一个更通用的方法是调用<code>Looper.prepare()</code>，先让子线程运行Looper：</p>
+<pre><code>	val runnable = Runnable {
+		Looper.prepare()
+		Looper.loop()
+      val rHandler = Handler()
+  }
+  Thread(runnable).start()
+</code></pre>
+<p><code>rHandler</code>是子线程的Handler()，其他线程获取到<code>rHandler</code>就可以给它发送Message和Runnable，实现线程间通信。</p>
+<p>回到上面的问题，::子线程中可以直接创建Handler吗？:: 子线程创建Handler有两种方式：</p>
+<ol>
+<li>最常用的方式是先调用<code>Looper.prepare()</code>和<code>Looper.loop()</code>让子线程运行Looper，然后再创建Handler；如果子线程已经运行了Looper，那就可以直接创建Handler。通过这种方式创建的Handler是运行在子线程的。</li>
+<li>可以通过<code>Handler(Looper looper)</code>在子线程创建Handler。通过这种方式创建的Handler和参数中looper运行在同一个线程；比如，在子线程中调用<code>Handler(Looper.getMainLooper())</code>，创建的Handler是运行在主线程的。</li>
+</ol>
+<h3 id="消息入队">消息入队</h3>
+<p><code>post()</code>系列方法会先调用<code>getPostMessage(Runnable r)</code>把Runnable包装成Message，然后再进行入队操作：</p>
+<pre><code>public final boolean post(@NonNull Runnable r) {
+   return  sendMessageDelayed(getPostMessage(r), 0);
+}
+
+public final boolean postAtTime(@NonNull Runnable r, long uptimeMillis) {
+    return sendMessageAtTime(getPostMessage(r), uptimeMillis);
+}
+
+public final boolean postDelayed(@NonNull Runnable r, long delayMillis) {
+    return sendMessageDelayed(getPostMessage(r), delayMillis);
+}
+
+private static Message getPostMessage(Runnable r) {
+    Message m = Message.obtain();
+    m.callback = r;
+    return m;
+}
+</code></pre>
+<p><code>post()</code>和<code>send()</code>相关方法最终都会调用<code>enqueueMessage()</code>：</p>
+<pre><code>private boolean enqueueMessage(@NonNull MessageQueue queue, @NonNull Message msg, long uptimeMillis) {
+    msg.target = this;
+    msg.workSourceUid = ThreadLocalWorkSource.getUid();
+
+    if (mAsynchronous) {
+        msg.setAsynchronous(true);
+    }
+    return queue.enqueueMessage(msg, uptimeMillis);
+}
+</code></pre>
+<ul>
+<li><code>queue</code>是Handler中的全局变量mQueue实例</li>
+<li><code>msg</code>是被发送的消息实例，<code>uptimeMillis</code>是延时的毫秒值</li>
+<li><code>msg.target</code>是处理这个Message的Handler</li>
+</ul>
+<p>调用<code>queue.enqueueMessage</code>把Message提交给MessageQueue，入队和出队操作在MessageQueue中进行。</p>
+<p>最后总结一下Handler：Handler用于发送和处理消息，Handler把Message转发给MessageQueue进行入队操作；它持有Looper和MessageQueue的实例，Handler唯一对应了一个Looper和MessageQueue，Looper属于哪个线程，Handler就属于哪个线程。</p>
+<h2 id="message">Message</h2>
+<p>Message是线程间传递的介质，它包含消息内容和类型；它是一个简单的链表结构，只包含<code>next</code>节点，pop和push都是由MessageQueue完成的。</p>
+<pre><code>public final class Message implements Parcelable {
+    public int what;
+    public int arg1;
+    public int arg2;
+    public Object obj;
+    Bundle data;
+    Handler target;
+    Runnable callback;
+
+    // sometimes we store linked lists of these things
+    Message next;
+}
+</code></pre>
+<ul>
+<li><code>what</code>是消息类型</li>
+<li><code>arg1</code>、<code>arg2</code>、<code>data</code>、<code>obj</code>用来存放消息内容</li>
+<li><code>target</code>是处理Message的Handler引用</li>
+<li><code>callback</code>是Runnable类型，如果Handler使用了<code>post(Runnable)</code>系列方法，Runnable在入队之前会被包装成Message，<code>callback</code>就是Runnable的引用</li>
+<li><code>next</code>是下一个Message节点的引用，如果一个Handler发送了多个消息MessageQueue里面持有的是Message链表的头节点</li>
+</ul>
+<p>Message里面有若干个静态的重载<code>obtain()</code>，它们都是用来创建Message的。</p>
+<p>::官方文档为什么推荐使用Message.obtain()创建Message？::<br>
+这个问题在<code>obtain()</code>的注释里面说的很清楚：</p>
+<pre><code>/**
+ * Return a new Message instance from the global pool. Allows us to
+ * avoid allocating new objects in many cases.
+ */
+public static Message obtain() {
+}
+</code></pre>
+<p>应用中有全局的Message实例池，创建Message时调用<code>obtain()</code>会从池里面获取Message实例，用完后通过Message的<code>recycler()</code>回收到池中，从而避免了分配过多的Message而占用内存。和线程池的道理是一样的，都是为了促进资源回收和充分利用，避免应用占用过多的内存资源。</p>
+<blockquote>
+<p>Message的回收是MessageQueue操作的，无需开发者参与</p>
+</blockquote>
+<h2 id="messagequeue">MessageQueue</h2>
+<p>Queue是队列，MessageQueue就是消息队列。MessageQueue中有<code>enqueueMessage()</code>和<code>next()</code>两个方法，分别对应入队和出队操作。Handler通过<code>enqueueMessage()</code>把Message放进消息队列；Looper通过<code>next()</code>获取需要被处理的Message。</p>
+<p>Queue，队列像是个传送带；先放上传送带的货物先出去，后放上去的后出去。MessageQueue 的出队顺序并没有遵循入队顺序，而是依据延迟的时间；先到时间的先出去，后到时间的后出去；而延迟时间相同的Message是依据入队顺序出队的。</p>
+<h2 id="looper">Looper</h2>
+<p>Looper通过名称就可以看出来它的作用是循环获取消息。Looper持有Thread和MessageQueue的引用， Thread是Looper所在的线程，MessageQueue是消息队列。启动Looper只能通过<code>Looper.prepare()</code>：</p>
+<pre><code>public static void prepare() {
+    prepare(true);
+}
+
+private static void prepare(boolean quitAllowed) {
+    if (sThreadLocal.get() != null) {
+        throw new RuntimeException(“Only one Looper may be created per thread”);
+    }
+    sThreadLocal.set(new Looper(quitAllowed));
+}
+
+private Looper(boolean quitAllowed) {
+    mQueue = new MessageQueue(quitAllowed);
+    mThread = Thread.currentThread();
+}
+</code></pre>
+<p>Looper中的Thread是获取了当前线程的引用，MessageQueue是new出来的。同一个线程只能调用一次<code>Looper.prepare()</code>，多于一次就会抛出运行时异常。<code>sThreadLocal</code>是线程局部变量，结构类似Map，以键值对的形式存储和当前线程相关的变量。</p>
+<p>Looper中最核心的是<code>loop()</code>：</p>
+<pre><code>public static void loop() {
+    final Looper me = myLooper();                // 1
+    if (me == null) {
+        throw new RuntimeException(“No Looper; Looper.prepare() wasn’t called on this thread.”);
+    }
+    final MessageQueue queue = me.mQueue;       // 2
+
+    for (;;) {
+        Message msg = queue.next();             // 3
+        if (msg == null) {
+            // No message indicates that the message queue is quitting.
+            return;
+        }
+
+        try {
+            msg.target.dispatchMessage(msg);   // 4
+        } catch (Exception exception) {
+            throw exception;
+        } finally {
+            ......
+        }
+    	  ......
+    }
+}
+</code></pre>
+<p>上面的代码是极简版本，省略了很多。</p>
+<ol>
+<li>获取当前线程的Looper，通过ThreadLocal存储Thread对象和对应的Looper，获取的时候是根据当前线程获取的</li>
+<li>获取到当前线程的MessageQueue</li>
+<li>获取MessageQueue中的Message，如果Message为null，就返回，开启下次循环</li>
+<li>调用Message的target.dispatchMessage(msg)，把Message交给这个Handler</li>
+</ol>
+<p>现在来到了消息分发的最后一公里，Handler发送的消息，最后还是要交给Handler处理，解铃还须系铃人。</p>
+<pre><code>public void dispatchMessage(@NonNull Message msg) {
+    if (msg.callback != null) {
+        handleCallback(msg);
+    } else {
+        if (mCallback != null) {
+            if (mCallback.handleMessage(msg)) {
+                return;
+            }
+        }
+        handleMessage(msg);
+    }
+}
+</code></pre>
+<p><code>msg.callback</code>是什么？使用<code>handler.post()</code>发送Runnable，在入队之前Runnable会被包装成Message，它会赋值给<code>msg.callback</code>；如果使用了<code>post()</code>系列方法，<code>msg.callback</code>一定不会为空，从而会触发<code>handleCallback(msg)</code>：</p>
+<pre><code>private static void handleCallback(Message message) {
+    message.callback.run();
+}
+</code></pre>
+<p>如果使用<code>handler.send()</code>发送Message，会走<code>else</code>；<code>mCallback</code>是创建Handler传给构造函数的<code>Callback</code>回调，然后触发<code>handleMessage(msg)</code>。我的快递到了。</p>
+<h2 id="总结">总结</h2>
+<p>Handler的整体流程就已经很清晰了：</p>
+<ol>
+<li>主线程通过<code>Handler(Callback)</code>创建Handler，在Callback中处理消息</li>
+<li>调用<code>handler.post(Runnable)</code>或者<code>handler.send()</code>发送消息，Runnable会被包装成Message发送出去</li>
+<li>在Handler中，通过<code>queue.enqueueMessage()</code>把Message交给MessageQueue进行入队操作</li>
+<li>Looper持有MessageQueue的引用，Looper一直在等待MessageQueue中的新消息，一旦获取到新消息，Looper取出Message中的target，调用<code>target.dispatchMessage()</code>，消息最后被分发给Handler的Callback，整个流程就走完了</li>
+</ol>
+<p>现在再看文章最开始的例子，应该能理解Handler的精髓了。再上一张图：</p>
+<h2 id="内存泄漏">内存泄漏</h2>
+<p>最后再想一个问题，Handler怎么造成内存泄露的，以及如何避免。</p>
+<p>什么是内存泄漏？<br>
+给对象分配内存空间后，不再使用该对象时，GC也无法释放它占用的空间。比如，在Android中，结束掉Activity后，Activity占用的内存空间没有被释放，这时Activity就发生了内存泄漏。</p>
+<p>Handler发生内存泄漏的代码通常如图所示：<br>
+[image:B71C376B-2D54-4E29-8DDE-520E0DFD053E-720-000131948978DBD6/35FE30F1-3604-45F2-9248-D9E8704A3CE3.png]<br>
+编译器的提示很委婉：<code>leaks might occur</code>，可能会发生泄漏；所以使用内部类形式的Handler并不一定会发生内存泄漏。</p>
+<p>匿名内部类Handler持有Activity的引用，Message持有Handler的引用，MessageQueue持有Message的引用，Looper持有MessageQueue的引用：<code>Looper -&gt; MessageQueue -&gt; Message -&gt; Handler -&gt; Activity</code>。主线程的Looper和应用的生命周期是相同的，如果Activity被<code>finish()</code>了，但Handler发送的消息还没有被处理，这时Activity是不会被JVM判定为可以回收的。</p>
+<p>由此可以判断，Handler引发的内存泄漏是因为在Activity <code>finish()</code>之前调用了<code>handler.postDelay()</code>或者<code>handler.sendMessageDelay()</code>，在Activity被finish()后Handler还有未处理的消息导致的。</p>
+<h3 id="影响几何">影响几何</h3>
+<p>由于上述原因导致的内存泄漏会带来什么样的影响？被泄漏的Activity一直都不会被回收吗？</p>
+<p>JVM操作内存的垃圾回收，GC会一遍又一遍的、周而复始的扫描内存中存活的对象，如果该对象符合回收条件，就会被回收。</p>
+<blockquote>
+<p>JVM有若干GC算法，比如，标记-清除、标记-复制、可达性分析等。像标记-清除，它分为两个阶段，先标记可回收的对象，等下次GC发生时清除被标记的对象。</p>
+</blockquote>
+<p>假如Activity <code>finish()</code>之前调用了<code>handler.postDelay({ //若干操作 }, 5000)</code>，触发了5秒后的延时操作。在这5秒内GC可能对该Activity扫描了一次，也可能扫描了多次，每次扫描Activity GC都发现有引用指向它，所以肯定不会回收它；到第5秒，Runnable被Handler处理了，指向该Activity的Message也被回收，下次GC再次扫描Activity发现没有引用指向它，此时Activity即将被回收。</p>
+<p>由此可以得出结论：由于Handler发送延迟消息导致的Activity内存泄漏，会在延迟消息被处理后，Activity才会被GC回收。Activity泄漏的时间长短取决于Handler发送的延迟消息的延迟时间。</p>
+<h3 id="解决内存泄漏">解决内存泄漏</h3>
+<p>明确了Handler是怎么导致内存泄漏的，解决方案也很容易：</p>
+<ol>
+<li>Handler由内部类的形式改成静态内部类的形式，因为静态内部类不持有外部类的引用；Handler不持有Activity的引用，即便有延迟消息也不会发生内存泄漏</li>
+<li>在Activity <code>finish()</code>之前调用<code>handler.removeCallbacksAndMessages(null)</code>，移除Handler中所有未处理的任务，这样也就避免了内存泄漏<br>
+具体使用什么样的策略取决于代码的业务场景。</li>
+</ol>
+<p>这篇文章到此就结束了。本文介绍了Handler的工作流程，并分析了常见的几个Handler相关的面试问题。</p>
+
+        </div>
+
+        
+
+
+        <div class="flex justify-between py-8">
+          
+            <div class="prev-post">
+              <a href="http://localhost:4000/post/flutter-ye-mian-dao-hang-yi">
+                <h3 class="post-title">
+                  <i class="remixicon-arrow-left-line"></i>
+                  Flutter页面导航（一）
+                </h3>
+              </a>
+            </div>
+          
+
+          
+            <div class="next-post">
+              <a href="http://localhost:4000/post/hello-gridea">
+                <h3 class="post-title">
+                  Hello Gridea
+                  <i class="remixicon-arrow-right-line"></i>
+                </h3>
+              </a>
+            </div>
+          
+        </div>
+
+        
+
+      </div>
+    </div>
+
+    <script src="http://localhost:4000/media/prism.js"></script>  
+<script>
+
+Prism.highlightAll()
+
+let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+// This should probably be throttled.
+// Especially because it triggers during smooth scrolling.
+// https://lodash.com/docs/4.17.10#throttle
+// You could do like...
+// window.addEventListener("scroll", () => {
+//    _.throttle(doThatStuff, 100);
+// });
+// Only not doing it here to keep this Pen dependency-free.
+
+window.addEventListener("scroll", event => {
+  let fromTop = window.scrollY;
+
+  mainNavLinks.forEach((link, index) => {
+    let section = document.getElementById(decodeURI(link.hash).substring(1));
+    let nextSection = null
+    if (mainNavLinks[index + 1]) {
+      nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+    }
+    if (section.offsetTop <= fromTop) {
+      if (nextSection) {
+        if (nextSection.offsetTop > fromTop) {
+          link.classList.add("current");
+        } else {
+          link.classList.remove("current");    
+        }
+      } else {
+        link.classList.add("current");
+      }
+    } else {
+      link.classList.remove("current");
+    }
+  });
+});
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  var lazyImages = [].slice.call(document.querySelectorAll(".post-feature-image.lazy"));
+
+  if ("IntersectionObserver" in window) {
+    let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          let lazyImage = entry.target
+          lazyImage.style.backgroundImage = `url(${lazyImage.dataset.bg})`
+          lazyImage.classList.remove("lazy")
+          lazyImageObserver.unobserve(lazyImage)
+        }
+      });
+    });
+
+    lazyImages.forEach(function(lazyImage) {
+      lazyImageObserver.observe(lazyImage)
+    })
+  } else {
+    // Possibly fall back to a more compatible method here
+  }
+});
+
+const menuContainer = document.querySelector('.menu-container')
+const menus = document.querySelectorAll('.menu-container .menu')
+const mask = document.querySelector('.mask')
+const contentWrapper = document.querySelector('.content-wrapper')
+const latestArticle = document.querySelector('.latest-article')
+const readMore = document.querySelector('.read-more')
+const indexPage = document.querySelector('.index-page')
+
+const isHome = location.pathname === '/'
+if (latestArticle) {
+  latestArticle.style.display = isHome ? 'block' : 'none'
+  readMore.style.display = isHome ? 'block' : 'none'
+  indexPage.style.display = isHome ? 'none' : 'block'
+}
+
+const openMenu = () => {
+  menuContainer.classList.add('open')
+  menus.forEach(menu => {
+    menu.classList.add('animated', 'fadeInLeft')
+  })
+  mask.classList.add('open')
+  contentWrapper.classList.add('is-second')
+}
+
+const closeMenu = () => {
+  menuContainer.classList.remove('open')
+  menus.forEach(menu => {
+    menu.classList.remove('animated', 'fadeInLeft')
+  })
+  mask.classList.remove('open')
+  contentWrapper.classList.remove('is-second')
+}
+</script>
+  
+  </body>
+</html>
