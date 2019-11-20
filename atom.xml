@@ -1,199 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>http://localhost:4000</id>
+    <id>https://wanyt.github.io</id>
     <title>Gridea</title>
-    <updated>2019-11-20T03:49:30.802Z</updated>
+    <updated>2019-11-20T07:22:02.940Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="http://localhost:4000"/>
-    <link rel="self" href="http://localhost:4000/atom.xml"/>
-    <subtitle>温故而知新</subtitle>
-    <logo>http://localhost:4000/images/avatar.png</logo>
-    <icon>http://localhost:4000/favicon.ico</icon>
+    <link rel="alternate" href="https://wanyt.github.io"/>
+    <link rel="self" href="https://wanyt.github.io/atom.xml"/>
+    <subtitle>CODE the WORLD</subtitle>
+    <logo>https://wanyt.github.io/images/avatar.png</logo>
+    <icon>https://wanyt.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, Gridea</rights>
     <entry>
-        <title type="html"><![CDATA[H]]></title>
-        <id>http://localhost:4000/post/h</id>
-        <link href="http://localhost:4000/post/h">
-        </link>
-        <updated>2019-11-18T07:14:00.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="handler和内存泄漏">Handler和内存泄漏</h1>
-<p>面试经常会问什么操作会产生内存泄漏？</p>
-<p>本文章验证三个问题：</p>
-<ol>
-<li>Handler如何造成内存泄漏</li>
-<li>Handler导致内存泄漏的影响如何</li>
-<li>如何避免Handler造成的内存泄漏</li>
-</ol>
-<h2 id="profile简单使用">Profile简单使用</h2>
-<h2 id="handler如何造成内存泄漏">Handler如何造成内存泄漏</h2>
-<h2 id="handler导致内存泄漏的影响如何">Handler导致内存泄漏的影响如何</h2>
-<h2 id="如何避免handler造成的内存泄漏">如何避免Handler造成的内存泄漏</h2>
-<ol>
-<li>信令是怎么处理的？sfu是不传递信令的</li>
-</ol>
-<p>#blog</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Flutter页面导航（一）]]></title>
-        <id>http://localhost:4000/post/flutter-ye-mian-dao-hang-yi</id>
-        <link href="http://localhost:4000/post/flutter-ye-mian-dao-hang-yi">
-        </link>
-        <updated>2019-10-27T14:08:22.000Z</updated>
-        <content type="html"><![CDATA[<p>我刚接触Flutter的页面跳转会感觉有点怪异，主要还是对Dart语法不熟悉。Android，IOS应用中的页面在Flutter中被叫做Route，应用中的所有的Route被Navigator统一管理。Navigator定义了一系列页面跳转的方法，比如<code>Navigator.push()</code>，<code>Navigator.pop()</code>。Navigator是继承自StatefulWidget的Widget（没错Flutter里一切都是Widget）。</p>
-<p>上面列举的两个方法<code>Navigator.push()</code>和<code>Navigator.pop()</code>分别对应打开页面和关闭页面。在Flutter中，打开页面又分为使用Route对象打开——push()系列方法和按照路径打开——pushNamed()系列方法。</p>
-<h2 id="push">push()</h2>
-<p><code>static Future&lt;T&gt; push&lt;T extends Object&gt;(BuildContext context, Route&lt;T&gt; route)</code></p>
-<p><code>push()</code>是打开页面最常用的方法之一。第一个参数context是上下文，在StatelessWidget和StatefulWidget中都能获取到；第二个参数route是Route对象，它包含了的被打开的页面信息，一般使用<code>MaterialPageRoute</code>。看下用法：</p>
-<pre><code>class PushPageA extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: new AppBar(
-          title: new Text(&quot;Page A&quot;),
-        ),
-        body: new Center(
-            child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: &lt;Widget&gt;[
-              new RaisedButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                          return PushPageB();
-                        }));
-                },
-                child: new Text(&quot;push to B&quot;)),
-          ],
-        )));
-  }
-}
-
-class PushPageB extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: new AppBar(
-          title: new Text(&quot;Page B&quot;),
-        ),
-        body: new Text(&quot;this is page B&quot;));
-  }
-}
-</code></pre>
-<p>这样就打开了另一个页面，很简单吧！但是一个简单的跳转居然要我写四行代码，我也是醉了。有没有简单一点的写法，当然有：</p>
-<pre><code>Navigator.push(context,
-    MaterialPageRoute(builder: (context) =&gt; PushPageB()));
-</code></pre>
-<p>我们使用胖箭头语法把四行代码变成了两行，相对于上面的跳转代码来说更加易读了。但还是有点啰嗦，有没有更简练的语法。当然有~</p>
-<blockquote>
-<p>MaterialPageRoute是Route的子类，它是最常用的构建Route的类。也可以往方法里传入其他的Route子类，也可以自定义Route。</p>
-</blockquote>
-<h2 id="pushnamed">pushNamed()</h2>
-<p><code>Future&lt;T&gt; pushNamed&lt;T extends Object&gt;(BuildContext context, String routeName)</code></p>
-<p><code>pushNamed()</code>是使用路径名称的方式打开页面。第二个参数routeName就是页面的路径。要想使用这种跳转方式要分两步走：1. 定义页面路径；2. 使用页面路径跳转。</p>
-<p>首先，定义页面路径。在应用mainApp的build()中返回MaterialApp()，然后在MaterialApp()的<em>routes</em>属性中定义路径并给路径赋值，页面路径要使用<code>‘/a/b/c’</code>这样的格式，默认情况下，应用主页面的路径是”/“，也可以使用<em>initialRoute</em>修改主页面路径，不过没啥修改的必要。OK，上代码：</p>
-<pre><code>void main() =&gt; runApp(new MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      theme: new ThemeData(
-        primarySwatch: Colors.brown,
-      ),
-//      home: new MyHomePage(title: 'Navigation Demo'),
-      routes: {
-        &quot;/&quot;: (context) =&gt; new MyHomePage(title: 'Navigation Demo'),
-        &quot;/page2&quot;: (context) =&gt; new Page2(),
-      },
-    );
-  }
-}
-</code></pre>
-<p>这样就定义好路径，后面就可以使用它们进行跳转。但是有两点需要注意的地方。</p>
-<ol>
-<li>上面的代码注释了<em>home</em>属性，<em>route</em>属性中<code>&quot;/&quot;: (context) =&gt; new MyHomePage()</code>这行代码指定了主界面是MyHomePage。如果们在<em>route</em>中即使用了”/“指定主页面，又使用了<em>home</em>属性，这时运行应用是会抛出异常的。<em>home</em>和<em>route</em>中的”/“只能选择一个。</li>
-<li>我能不能在其他页面的<code>build()</code>中创建一个MaterialApp()，在这个页面的<em>route</em>属性中定义路径可以吗？不可以，只能在<code>main()</code>的MaterialApp()中定义。如果在其他页面的MaterialApp()中定义了路径，然后执行<code>pushName()</code>进行跳转，会抛出异常：Another exception was thrown: Could not find a generator for route “/routeName” in the _WidgetsAppState。</li>
-</ol>
-<p>现在就可以使用pushNamed()进行跳转了：</p>
-<pre><code>···
-Navigator.pushNamed(context, &quot;/page2&quot;);
-···
-</code></pre>
-<p><code>pushNamed()</code>用法比较简单直观，虽然要配置路径，但也是一劳永逸的事情。</p>
-<h2 id="pop">pop()</h2>
-<p><code>bool pop&lt;T extends Object&gt;(BuildContext context, [ T result ])</code></p>
-<p>直接调用<code>pop(context)</code>即可关闭页面。在<em>initialRoute</em>页面，也就是主页面调用<code>pop(context)</code>会显示空白页面（一些机型会显示全黑的页面）。也就是说在一些界面可以调用<code>pop(context)</code>，一些界面不可以。那我们怎么判断在当前页面能不能调用<code>pop(context)</code>呢？</p>
-<h2 id="canpop">canPop()</h2>
-<p><code>bool canPop(BuildContext context)</code></p>
-<p>canPop()返回一个布尔值，告诉调用者当前页面是否可以调用<code>pop(context)</code>。这个方法返回false的情况有两种：</p>
-<ol>
-<li><em>initialRoute</em>，被标记为<em>initialRoute</em>的页面不能执行pop()。在这个页面执行pop()要么报错，要么显示一个空白页面。</li>
-<li>在当前的上下文里没有Navigator的时候会返回false。</li>
-</ol>
-<h2 id="maybepop">maybePop()</h2>
-<p><code>maybePop&lt;T extends Object&gt;(BuildContext context, [ T result ])</code></p>
-<p>在<em>initialRoute</em>页面执行pop()会显示空白页面，或者报错。我们不能在这个页面执行pop()。如果不确定在某个页面能不能执行pop()。就需要判断一下再执行：</p>
-<pre><code>if(Navigator.canPop(context)){
-    Navigator.pop(context);
-}
-</code></pre>
-<p><code>maybePop()</code>在内部帮助我们做了判断。当前页面如果可以被pop就执行<code>pop()</code>，如果不可以就不执行。我们在<em>initialRoute</em>页面执行这个方法是没有任何表现的，在其他页面执行会正常关闭当前页面。</p>
-<h2 id="关闭页面并返回值">关闭页面并返回值</h2>
-<p>Android里面的<code>startActivityForResult()</code>，次级页面完成后关闭，然后往一级页面返回值。Flutter中也有对应的机制。我们再看一下pop()：</p>
-<pre><code>bool pop&lt;T extends Object&gt;(BuildContext context, [ T result ])
-</code></pre>
-<p>第二个参数result就是返回给上级页面的值，它可以是任何类型。我们再看一下打开页面的代码：</p>
-<pre><code>static Future&lt;T&gt; push&lt;T extends Object&gt;(BuildContext context, Route&lt;T&gt; route)
-</code></pre>
-<p>它的返回值类型是Future<T>，他就代表从上个页面返回的值，看下完整的代码：</p>
-<pre><code>// 一级页面打开次级页面的代码
-_pushToPage2() async {
-    String result = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) =&gt; Page2()));
-    print(&quot;$tag $result&quot;);
-}
-
-//次级页面返回的代码
-Navigator.pop(context, &quot;这是返回值&quot;);
-</code></pre>
-<h2 id="页面传值">页面传值</h2>
-<p>在Android中通过Intent给其他页面传值，先创建Intent()然后把Intent传给<code>startActivity()</code>，在下个页面获取到Intent后拿数据。在Flutter中这个流程就要简单的多，直接把数据放到页面的构造函数中。这种方式就比较直觉简单。代码还用上面的例子：</p>
-<pre><code>// 一级页面打开次级页面的代码
-_pushToPage2() async {
-    String result = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) =&gt; Page2()));
-    print(&quot;$tag $result&quot;);
-}
-
-class Page2 extends StatelessWidget {
-  String data;
-  Page2({Key key, this.data}): super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: AppBar(
-        title: new Text(&quot;第二个页面&quot;),
-      ),
-      body: new Center(
-        child: Column(children: &lt;Widget&gt;[
-          new Text(data),
-        ],)
-      ),
-    );
-  }
-}
-</code></pre>
-<p>Flutter的页面传值就简单，但使用<code>pushNamed()</code>是没有办法进行传值的。</p>
-<p>#android/flutter<br>
-#blog</p>
-]]></content>
-    </entry>
-    <entry>
         <title type="html"><![CDATA[Handler]]></title>
-        <id>http://localhost:4000/post/handler-ji-zhi</id>
-        <link href="http://localhost:4000/post/handler-ji-zhi">
+        <id>https://wanyt.github.io/post/handler-ji-zhi</id>
+        <link href="https://wanyt.github.io/post/handler-ji-zhi">
         </link>
         <updated>2019-10-27T14:07:22.000Z</updated>
         <summary type="html"><![CDATA[<p>想象这样一个场景：我在淘宝下个订单，订单上包含我的姓名和地址、货物名称等，商家把订单打包后交给顺丰，顺丰把订单运到北京的集散中心，集散中心根据订单上的姓名和地址把货物派送给我。这是网购的流程，和Handler机制有异曲同工之处：</p>
@@ -467,34 +287,6 @@ private Looper(boolean quitAllowed) {
 具体使用什么样的策略取决于代码的业务场景。</li>
 </ol>
 <p>这篇文章到此就结束了。本文介绍了Handler的工作流程，并分析了常见的几个Handler相关的面试问题。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Hello Gridea]]></title>
-        <id>http://localhost:4000/post/hello-gridea</id>
-        <link href="http://localhost:4000/post/hello-gridea">
-        </link>
-        <updated>2018-12-11T16:00:00.000Z</updated>
-        <content type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
-✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
-<p><a href="https://github.com/getgridea/gridea">Github</a><br>
-<a href="https://gridea.dev/">Gridea 主页</a><br>
-<a href="http://fehey.com/">示例网站</a></p>
-<h2 id="特性">特性👇</h2>
-<p>📝  你可以使用最酷的 <strong>Markdown</strong> 语法，进行快速创作</p>
-<p>🌉  你可以给文章配上精美的封面图和在文章任意位置插入图片</p>
-<p>🏷️  你可以对文章进行标签分组</p>
-<p>📋  你可以自定义菜单，甚至可以创建外部链接菜单</p>
-<p>💻  你可以在 <strong>Windows</strong>，<strong>MacOS</strong> 或 <strong>Linux</strong> 设备上使用此客户端</p>
-<p>🌎  你可以使用 <strong>𝖦𝗂𝗍𝗁𝗎𝖻 𝖯𝖺𝗀𝖾𝗌</strong> 或 <strong>Coding Pages</strong> 向世界展示，未来将支持更多平台</p>
-<p>💬  你可以进行简单的配置，接入 <a href="https://github.com/gitalk/gitalk">Gitalk</a> 或 <a href="https://github.com/SukkaW/DisqusJS">DisqusJS</a> 评论系统</p>
-<p>🇬🇧  你可以使用<strong>中文简体</strong>或<strong>英语</strong></p>
-<p>🌁  你可以任意使用应用内默认主题或任意第三方主题，强大的主题自定义能力</p>
-<p>🖥  你可以自定义源文件夹，利用 OneDrive、百度网盘、iCloud、Dropbox 等进行多设备同步</p>
-<p>🌱 当然 <strong>Gridea</strong> 还很年轻，有很多不足，但请相信，它会不停向前 🏃</p>
-<p>未来，它一定会成为你离不开的伙伴</p>
-<p>尽情发挥你的才华吧！</p>
-<p>😘 Enjoy~</p>
 ]]></content>
     </entry>
 </feed>

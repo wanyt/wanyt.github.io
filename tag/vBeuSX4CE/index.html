@@ -3,15 +3,15 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Gridea</title>
-<meta name="description" content="温故而知新" />
-<link rel="shortcut icon" href="http://localhost:4000/favicon.ico?v=1574221765178">
+<meta name="description" content="CODE the WORLD" />
+<link rel="shortcut icon" href="https://wanyt.github.io/favicon.ico?v=1574233850959">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link href="https://cdn.remixicon.com/releases/v1.3.1/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
 
-<link rel="stylesheet" href="http://localhost:4000/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="Gridea - Atom Feed" href="http://localhost:4000/atom.xml">
+<link rel="stylesheet" href="https://wanyt.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Gridea - Atom Feed" href="https://wanyt.github.io/atom.xml">
 
 
 
@@ -23,28 +23,38 @@
     <div class="sidebar-content">
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="remixicon-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
-        <a href="http://localhost:4000">
-          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="http://localhost:4000/images/avatar.png?v=1574221765178" alt="">
+        <a href="https://wanyt.github.io">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://wanyt.github.io/images/avatar.png?v=1574233850959" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Gridea</h1>
       </div>
       
         <div class="animated fadeInLeft" style="animation-delay: 0.4s">
           <p class="my-4 text-gray-600 font-light hidden lg:block">
-            文章目录
+            CODE the WORLD
           </p>
-          <div class="toc-container hidden lg:block">
-            <ul class="markdownIt-TOC">
-<li><a href="#handler%E5%92%8C%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F">Handler和内存泄漏</a>
-<ul>
-<li><a href="#profile%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8">Profile简单使用</a></li>
-<li><a href="#handler%E5%A6%82%E4%BD%95%E9%80%A0%E6%88%90%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F">Handler如何造成内存泄漏</a></li>
-<li><a href="#handler%E5%AF%BC%E8%87%B4%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E7%9A%84%E5%BD%B1%E5%93%8D%E5%A6%82%E4%BD%95">Handler导致内存泄漏的影响如何</a></li>
-<li><a href="#%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8Dhandler%E9%80%A0%E6%88%90%E7%9A%84%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F">如何避免Handler造成的内存泄漏</a></li>
-</ul>
-</li>
-</ul>
-
+          <div class="animated fadeInLeft social-container hidden lg:block" style="animation-delay: 0.6s">
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
           </div>
         </div>
       
@@ -57,25 +67,25 @@
   <div>
     
       
-        <a href="http://localhost:4000/" class="menu" style="animation-delay: 0s">
+        <a href="/" class="menu" style="animation-delay: 0s">
           首页
         </a>
       
     
       
-        <a href="http://localhost:4000/archives" class="menu" style="animation-delay: 0.2s">
+        <a href="/archives" class="menu" style="animation-delay: 0.2s">
           归档
         </a>
       
     
       
-        <a href="http://localhost:4000/tags" class="menu" style="animation-delay: 0.4s">
+        <a href="/tags" class="menu" style="animation-delay: 0.4s">
           标签
         </a>
       
     
       
-        <a href="http://localhost:4000/post/about" class="menu" style="animation-delay: 0.6000000000000001s">
+        <a href="/post/about" class="menu" style="animation-delay: 0.6000000000000001s">
           关于
         </a>
       
@@ -83,61 +93,39 @@
   </div>
   <div class="site-footer">
     <div class="py-4 text-gray-700">Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a></div>
-    <a class="rss" href="http://localhost:4000/atom.xml" target="_blank">RSS</a>
+    <a class="rss" href="https://wanyt.github.io/atom.xml" target="_blank">RSS</a>
   </div>
 </div>
 <div class="mask" onclick="closeMenu()">
 </div>
-      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
-        <h1 class="text-3xl font-bold lg:mt-16">H</h1>
-        <div class="text-sm text-gray-700 lg:my-8">
-          2019-11-18 / 1 min read
-        </div>
+      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4">
+        <h2 class="text-lg text-gray-700 mb-8">
+          <i class="remixicon-bookmark-line"></i> Handler
+        </h2>
         
-        <div class="post-content yue">
-          <h1 id="handler和内存泄漏">Handler和内存泄漏</h1>
-<p>面试经常会问什么操作会产生内存泄漏？</p>
-<p>本文章验证三个问题：</p>
-<ol>
-<li>Handler如何造成内存泄漏</li>
-<li>Handler导致内存泄漏的影响如何</li>
-<li>如何避免Handler造成的内存泄漏</li>
-</ol>
-<h2 id="profile简单使用">Profile简单使用</h2>
-<h2 id="handler如何造成内存泄漏">Handler如何造成内存泄漏</h2>
-<h2 id="handler导致内存泄漏的影响如何">Handler导致内存泄漏的影响如何</h2>
-<h2 id="如何避免handler造成的内存泄漏">如何避免Handler造成的内存泄漏</h2>
-<ol>
-<li>信令是怎么处理的？sfu是不传递信令的</li>
-</ol>
-<p>#blog</p>
+  <section class="post-item md:flex pb-12 animated fadeIn" :style="{ 'animation-delay': `${0 * 0.2}s` }">
+    
+    <div class="content">
+      <a href="https://wanyt.github.io/post/handler-ji-zhi">
+        <h2 class="post-title text-xl font-extrabold mt-5 md:mt-0">Handler</h2>
+      </a>
+      <div class="post-abstract text-gray-700 font-light my-4">
+        <p>想象这样一个场景：我在淘宝下个订单，订单上包含我的姓名和地址、货物名称等，商家把订单打包后交给顺丰，顺丰把订单运到北京的集散中心，集散中心根据订单上的姓名和地址把货物派送给我。这是网购的流程，和Handler机制有异曲同工之处：</p>
 
-        </div>
+      </div>
+      <div class="text-gray-400 text-sm font-light">2019-10-27 / 15 min read</div>
+    </div>
+  </section>
 
-        
-
-
-        <div class="flex justify-between py-8">
-          
-
-          
-            <div class="next-post">
-              <a href="http://localhost:4000/post/flutter-ye-mian-dao-hang-yi">
-                <h3 class="post-title">
-                  Flutter页面导航（一）
-                  <i class="remixicon-arrow-right-line"></i>
-                </h3>
-              </a>
-            </div>
-          
-        </div>
-
-        
+        <div class="pagination-container animated fadeIn">
+  
+  
+</div>
 
       </div>
     </div>
 
-    <script src="http://localhost:4000/media/prism.js"></script>  
+    <script src="https://wanyt.github.io/media/prism.js"></script>  
 <script>
 
 Prism.highlightAll()
