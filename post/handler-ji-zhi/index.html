@@ -2,16 +2,16 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Gridea</title>
+<title>小王</title>
 <meta name="description" content="CODE the WORLD" />
-<link rel="shortcut icon" href="https://wanyt.github.io/favicon.ico?v=1574233850959">
+<link rel="shortcut icon" href="https://wanyt.github.io/favicon.ico?v=1574240296793">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link href="https://cdn.remixicon.com/releases/v1.3.1/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
 
 <link rel="stylesheet" href="https://wanyt.github.io/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="Gridea - Atom Feed" href="https://wanyt.github.io/atom.xml">
+<link rel="alternate" type="application/atom+xml" title="小王 - Atom Feed" href="https://wanyt.github.io/atom.xml">
 
 
 
@@ -24,9 +24,9 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="remixicon-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a href="https://wanyt.github.io">
-          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://wanyt.github.io/images/avatar.png?v=1574233850959" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://wanyt.github.io/images/avatar.png?v=1574240296793" alt="">
         </a>
-        <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Gridea</h1>
+        <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">小王</h1>
       </div>
       
         <div class="animated fadeInLeft" style="animation-delay: 0.4s">
@@ -103,12 +103,11 @@
       <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
         <h1 class="text-3xl font-bold lg:mt-16">Handler</h1>
         <div class="text-sm text-gray-700 lg:my-8">
-          2019-10-27 / 15 min read
+          2019-10-27 / 14 min read
         </div>
         
         <div class="post-content yue">
           <p>想象这样一个场景：我在淘宝下个订单，订单上包含我的姓名和地址、货物名称等，商家把订单打包后交给顺丰，顺丰把订单运到北京的集散中心，集散中心根据订单上的姓名和地址把货物派送给我。这是网购的流程，和Handler机制有异曲同工之处：</p>
-<!-- more -->
 <ol>
 <li>我 —— Handler，我下订单就是<code>handler.post()</code>，订单经过转运之后还是交给我；Handler发消息的最终目的地还是Handler的回调处理消息</li>
 <li>订单 —— Message，订单里包含收货地址，货物等，就是<code>msg.target</code>、<code>msg.what</code>、<code>msg.data</code>，Message是消息传递的介质</li>
@@ -116,7 +115,7 @@
 <li>集散中心 —— Looper，集散中心一直阻塞在这里等待新的货物到达，然后根据订单上的地址分发快递；Looper在for循环里一直获取最新的消息，如果有新消息就根据<code>msg.target</code>获取到handler然后调用<code>dispatchMessage()</code>把消息分发下去，最后触发Handler的Callback回调</li>
 </ol>
 <p>虽然这个例子并没有完美的契合Handler的运行机制（还有商家没有对应到Handler），但是对于理解Handler是十分有帮助的。</p>
-<p>Handler是Android应用层中广泛使用的多线程通信组件。Handler的用途表现在两个方面：（1）延时执行Runnable或延时发送Message；（2）线程间通信，给其他线程发消息，通知其他线程执行操作。</p>
+<p>Handler是Android <mark>应用</mark> 层中广泛使用的多线程通信组件。Handler的用途表现在两个方面：（1）延时执行Runnable或延时发送Message；（2）线程间通信，给其他线程发消息，通知其他线程执行操作。</p>
 <p>整个Handler机制包含四个角色：</p>
 <ul>
 <li><code>Handler</code>，它是开发者直接操作的对象，它参与了消息分发流程中发送和处理消息的过程</li>
@@ -356,7 +355,7 @@ private Looper(boolean quitAllowed) {
 <p>什么是内存泄漏？<br>
 给对象分配内存空间后，不再使用该对象时，GC也无法释放它占用的空间。比如，在Android中，结束掉Activity后，Activity占用的内存空间没有被释放，这时Activity就发生了内存泄漏。</p>
 <p>Handler发生内存泄漏的代码通常如图所示：<br>
-[image:B71C376B-2D54-4E29-8DDE-520E0DFD053E-720-000131948978DBD6/35FE30F1-3604-45F2-9248-D9E8704A3CE3.png]<br>
+<img src="https://wanyt.github.io/post-images/1574240208503.png" alt=""><br>
 编译器的提示很委婉：<code>leaks might occur</code>，可能会发生泄漏；所以使用内部类形式的Handler并不一定会发生内存泄漏。</p>
 <p>匿名内部类Handler持有Activity的引用，Message持有Handler的引用，MessageQueue持有Message的引用，Looper持有MessageQueue的引用：<code>Looper -&gt; MessageQueue -&gt; Message -&gt; Handler -&gt; Activity</code>。主线程的Looper和应用的生命周期是相同的，如果Activity被<code>finish()</code>了，但Handler发送的消息还没有被处理，这时Activity是不会被JVM判定为可以回收的。</p>
 <p>由此可以判断，Handler引发的内存泄漏是因为在Activity <code>finish()</code>之前调用了<code>handler.postDelay()</code>或者<code>handler.sendMessageDelay()</code>，在Activity被finish()后Handler还有未处理的消息导致的。</p>
