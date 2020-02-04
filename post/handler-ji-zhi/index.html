@@ -2,16 +2,16 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>小王</title>
+<title>Caesar</title>
 <meta name="description" content="CODE the WORLD" />
-<link rel="shortcut icon" href="https://wanyt.github.io/favicon.ico?v=1574240296793">
+<link rel="shortcut icon" href="https://wanyt.github.io/favicon.ico?v=1580810841098">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link href="https://cdn.remixicon.com/releases/v1.3.1/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
 
 <link rel="stylesheet" href="https://wanyt.github.io/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="小王 - Atom Feed" href="https://wanyt.github.io/atom.xml">
+<link rel="alternate" type="application/atom+xml" title="Caesar - Atom Feed" href="https://wanyt.github.io/atom.xml">
 
 
 
@@ -24,9 +24,9 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="remixicon-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a href="https://wanyt.github.io">
-          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://wanyt.github.io/images/avatar.png?v=1574240296793" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://wanyt.github.io/images/avatar.png?v=1580810841098" alt="">
         </a>
-        <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">小王</h1>
+        <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Caesar</h1>
       </div>
       
         <div class="animated fadeInLeft" style="animation-delay: 0.4s">
@@ -355,7 +355,7 @@ private Looper(boolean quitAllowed) {
 <p>什么是内存泄漏？<br>
 给对象分配内存空间后，不再使用该对象时，GC也无法释放它占用的空间。比如，在Android中，结束掉Activity后，Activity占用的内存空间没有被释放，这时Activity就发生了内存泄漏。</p>
 <p>Handler发生内存泄漏的代码通常如图所示：<br>
-<img src="https://wanyt.github.io/post-images/1574240208503.png" alt=""><br>
+<img src="https://wanyt.github.io/post-images/1574240208503.png" alt="" loading="lazy"><br>
 编译器的提示很委婉：<code>leaks might occur</code>，可能会发生泄漏；所以使用内部类形式的Handler并不一定会发生内存泄漏。</p>
 <p>匿名内部类Handler持有Activity的引用，Message持有Handler的引用，MessageQueue持有Message的引用，Looper持有MessageQueue的引用：<code>Looper -&gt; MessageQueue -&gt; Message -&gt; Handler -&gt; Activity</code>。主线程的Looper和应用的生命周期是相同的，如果Activity被<code>finish()</code>了，但Handler发送的消息还没有被处理，这时Activity是不会被JVM判定为可以回收的。</p>
 <p>由此可以判断，Handler引发的内存泄漏是因为在Activity <code>finish()</code>之前调用了<code>handler.postDelay()</code>或者<code>handler.sendMessageDelay()</code>，在Activity被finish()后Handler还有未处理的消息导致的。</p>
@@ -386,6 +386,15 @@ private Looper(boolean quitAllowed) {
 
 
         <div class="flex justify-between py-8">
+          
+            <div class="prev-post">
+              <a href="https://wanyt.github.io/post/xuan-ze-pai-xu">
+                <h3 class="post-title">
+                  <i class="remixicon-arrow-left-line"></i>
+                  选择排序
+                </h3>
+              </a>
+            </div>
           
 
           

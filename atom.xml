@@ -1,15 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://wanyt.github.io</id>
-    <title>小王</title>
-    <updated>2019-11-20T08:58:41.375Z</updated>
+    <title>Caesar</title>
+    <updated>2020-02-04T10:08:42.881Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://wanyt.github.io"/>
     <link rel="self" href="https://wanyt.github.io/atom.xml"/>
     <subtitle>CODE the WORLD</subtitle>
     <logo>https://wanyt.github.io/images/avatar.png</logo>
     <icon>https://wanyt.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2019, 小王</rights>
+    <rights>All rights reserved 2020, Caesar</rights>
+    <entry>
+        <title type="html"><![CDATA[选择排序]]></title>
+        <id>https://wanyt.github.io/post/xuan-ze-pai-xu</id>
+        <link href="https://wanyt.github.io/post/xuan-ze-pai-xu">
+        </link>
+        <updated>2020-02-04T07:05:37.000Z</updated>
+        <content type="html"><![CDATA[<p>为什么叫选择排序呢？当然是和它的实现过程有关。首先，选择数组中最小的元素，把它和数组的第一个元素交换位置；然后，在数组的剩余元素中选择最小元素，把它和数组的第二个元素交换位置。如此循环往复，直到最后一个元素。</p>
+<p>下图是选择排序的过程图：<br>
+<img src="https://wanyt.github.io/post-images/1580806348134.gif" alt="选择排序过程" loading="lazy"></p>
+<ul>
+<li>初始顺序是：5，3，8，7，9，6，0，2</li>
+<li>红色字体代表未排序的元素</li>
+<li>白色字体代表排序完成和已知最小值的元素</li>
+<li>蓝色背景代表两个元素相比较</li>
+<li>黄色背景代表两个元素需要交换位置</li>
+</ul>
+<h2 id="代码实现">代码实现</h2>
+<pre><code>public int[] sort(int[] arr) {
+    for(int i = 0; i &lt; arr.length; i++){
+        int minIndex = i; //最小元素的索引
+        for (int j = i + 1; j &lt; arr.length; j++){
+            if(arr[j] &lt; arr[minIndex]){
+                minIndex = j;
+            }
+        }
+        exch(arr, i, minIndex);
+    }
+    return arr;
+}
+</code></pre>
+<p>通过两个<strong>for循环</strong>实现选择排序。外层循环负责记录当前需要被排序元素的索引；内层for循环负责寻找数组中剩余未排序元素中最小的元素，记录它的索引，然后使用<code>exch()</code>交换两个元素的位置，再开始下一个元素的排序循环。</p>
+<h2 id="复杂度分析">复杂度分析</h2>
+<p>在排序的过程中主要做了什么事情呢？有两件，一是外循环的<strong>交换</strong>，另一个是内循环的<strong>比较</strong>。问，交换和比较的次数分别是多少？</p>
+<p>交换比较直观，<code>exch()</code>在外层for循环中，所以，外层for循环执行了多少次<code>exch()</code>就执行了多少了，<code>exch()</code>的执行次数就是交换的次数，所以，最坏情况下交换了_N次_。</p>
+<blockquote>
+<p>为什么说最坏情况交换了N次呢？在<code>exch()</code>中要有个判断<code>if (i &lt; minIndex)</code>才会执行交换。否则就代表<code>i</code>索引处的元素就已经是最小元素了。因此，交换次数只可能小于等于<code>N</code>。</p>
+</blockquote>
+<p>现在再分析比较的次数。用代码分析太抽象，举个例子，现有数组<code>[5,4,3,2,1]</code>，给该数组使用选择排序的比较过程如下：<br>
+<img src="https://wanyt.github.io/post-images/1580807556869.jpg" alt="" loading="lazy"><br>
+给5个元素的数组排序，需要循环4轮，每轮又需要若干次比较，蓝色的勾是比较的次数。第一轮需要比较4次，第二轮比较3次，第三轮比较2次，第四轮比较1次。这里有个规律，总次数 = (5-1) + (5-2) + (5-3) + (5-4)；类推可得，给长度为N的数组使用选择排序，总比较次数为：</p>
+<pre><code>总次数 = (N-1) + (N-2) + ... + 2 + 1
+</code></pre>
+<p>等式右边的是个等差数列，公差是1。等差数列的前N项和是：<code>Sn=n(a1+an)/2</code>。带入公式可得：</p>
+<pre><code>总次数 = (n² - n) / 2
+</code></pre>
+<p>把5代入到上式可得：给长度为5的数组进行选择排序，需要比较的次数是10。这个结果跟上面计算出来的结果是一样的。</p>
+<p>通过以上的分析可得出如下结论，对N个元素使用选择排序：</p>
+<ol>
+<li>最坏情况需要交换N次</li>
+<li>一定需要(n² - n) / 2次比较<br>
+所以，选择排序的时间复杂度取决于比较的次数。</li>
+</ol>
+<h2 id="优劣分析">优劣分析</h2>
+<p>再看上面的例子，给数组<code>[5, 4, 3, 2, 1]</code>排序，当进行到第三轮循环数组就已经是有序的，但循环还要继续，依然要进行后续的比较。假如对有序数组<code>[1, 2, 3, 4, 5, ... 9999, 10000]</code>使用选择排序，会发现它和有10000个元素的无序数组的运行时间是相同的，这个效率令人大跌眼镜。数组的初始顺序对运行时间没有任何影响，对部分有序数组使用选择排序绝对不是明智的选择。</p>
+<p>但选择排序的数据移动是最少的。每次交换都会改变两个数组元素的值，可以确定一个元素的位置，<strong>最多进行N次交换，交换次数和数组大小呈线性关系。</strong></p>
+<p>选择排序属于原地排序，不需要申请额外的内存控件，空间复杂度为O(n)。</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Handler]]></title>
         <id>https://wanyt.github.io/post/handler-ji-zhi</id>
@@ -264,7 +322,7 @@ private Looper(boolean quitAllowed) {
 <p>什么是内存泄漏？<br>
 给对象分配内存空间后，不再使用该对象时，GC也无法释放它占用的空间。比如，在Android中，结束掉Activity后，Activity占用的内存空间没有被释放，这时Activity就发生了内存泄漏。</p>
 <p>Handler发生内存泄漏的代码通常如图所示：<br>
-<img src="https://wanyt.github.io/post-images/1574240208503.png" alt=""><br>
+<img src="https://wanyt.github.io/post-images/1574240208503.png" alt="" loading="lazy"><br>
 编译器的提示很委婉：<code>leaks might occur</code>，可能会发生泄漏；所以使用内部类形式的Handler并不一定会发生内存泄漏。</p>
 <p>匿名内部类Handler持有Activity的引用，Message持有Handler的引用，MessageQueue持有Message的引用，Looper持有MessageQueue的引用：<code>Looper -&gt; MessageQueue -&gt; Message -&gt; Handler -&gt; Activity</code>。主线程的Looper和应用的生命周期是相同的，如果Activity被<code>finish()</code>了，但Handler发送的消息还没有被处理，这时Activity是不会被JVM判定为可以回收的。</p>
 <p>由此可以判断，Handler引发的内存泄漏是因为在Activity <code>finish()</code>之前调用了<code>handler.postDelay()</code>或者<code>handler.sendMessageDelay()</code>，在Activity被finish()后Handler还有未处理的消息导致的。</p>
