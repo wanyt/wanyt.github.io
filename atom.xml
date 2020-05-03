@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://wanyt.github.io</id>
-    <title>Caesar</title>
-    <updated>2020-02-04T10:08:42.881Z</updated>
+    <title>一个臭皮匠</title>
+    <updated>2020-05-03T11:52:01.878Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://wanyt.github.io"/>
     <link rel="self" href="https://wanyt.github.io/atom.xml"/>
-    <subtitle>CODE the WORLD</subtitle>
+    <subtitle>实践出真知</subtitle>
     <logo>https://wanyt.github.io/images/avatar.png</logo>
     <icon>https://wanyt.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2020, Caesar</rights>
+    <rights>All rights reserved 2020, 一个臭皮匠</rights>
     <entry>
         <title type="html"><![CDATA[选择排序]]></title>
-        <id>https://wanyt.github.io/post/xuan-ze-pai-xu</id>
-        <link href="https://wanyt.github.io/post/xuan-ze-pai-xu">
+        <id>https://wanyt.github.io/post/xuan-ze-pai-xu/</id>
+        <link href="https://wanyt.github.io/post/xuan-ze-pai-xu/">
         </link>
         <updated>2020-02-04T07:05:37.000Z</updated>
         <content type="html"><![CDATA[<p>为什么叫选择排序呢？当然是和它的实现过程有关。首先，选择数组中最小的元素，把它和数组的第一个元素交换位置；然后，在数组的剩余元素中选择最小元素，把它和数组的第二个元素交换位置。如此循环往复，直到最后一个元素。</p>
@@ -70,8 +70,8 @@
     </entry>
     <entry>
         <title type="html"><![CDATA[Handler]]></title>
-        <id>https://wanyt.github.io/post/handler-ji-zhi</id>
-        <link href="https://wanyt.github.io/post/handler-ji-zhi">
+        <id>https://wanyt.github.io/post/handler-ji-zhi/</id>
+        <link href="https://wanyt.github.io/post/handler-ji-zhi/">
         </link>
         <updated>2019-10-27T14:07:22.000Z</updated>
         <content type="html"><![CDATA[<p>想象这样一个场景：我在淘宝下个订单，订单上包含我的姓名和地址、货物名称等，商家把订单打包后交给顺丰，顺丰把订单运到北京的集散中心，集散中心根据订单上的姓名和地址把货物派送给我。这是网购的流程，和Handler机制有异曲同工之处：</p>
