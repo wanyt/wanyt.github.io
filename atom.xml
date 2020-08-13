@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://wanyt.github.io</id>
     <title>一个臭皮匠</title>
-    <updated>2020-05-03T11:52:01.878Z</updated>
+    <updated>2020-08-13T08:24:57.785Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://wanyt.github.io"/>
     <link rel="self" href="https://wanyt.github.io/atom.xml"/>
@@ -10,6 +10,150 @@
     <logo>https://wanyt.github.io/images/avatar.png</logo>
     <icon>https://wanyt.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, 一个臭皮匠</rights>
+    <entry>
+        <title type="html"><![CDATA[ThreadLocalMap]]></title>
+        <id>https://wanyt.github.io/post/threadlocalmap/</id>
+        <link href="https://wanyt.github.io/post/threadlocalmap/">
+        </link>
+        <updated>2020-08-13T08:24:08.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>线性探测法解决哈希冲突的典型实现</p>
+</blockquote>
+<p>既然是Map那么它就是用来存储键值对的的数据结构。Java中常用的Map有HashMap、HashTable、ConcurrentHashMap等。ThreadLocalMap并没有实现Map接口，它不属于Java的集合体系，它是包级别可见，没有对开发者开放，仅供ThreadLocal和Thread使用。</p>
+<p>HashMap使用拉链法解决哈希冲突；ThreadLocalMap和HashTable一样使用线性探测法解决哈希冲突。</p>
+<p>为什么使用WeakReference?</p>
+<pre><code class="language-java">private void set(ThreadLocal&lt;?&gt; key, Object value) {
+	Entry[] tab = table;
+	int len = tab.length;
+	int i = key.threadLocalHashCode &amp; (len-1);
+
+	for (Entry e = tab[i];
+		 e != null; // 如果e有值，则进入循环；如果e为null，则退出循环
+		 e = tab[i = nextIndex(i, len)]) { // 循环体执行完成后，执行本语句；执行本语句的前提是：i-1有值
+		ThreadLocal&lt;?&gt; k = e.get();
+
+		if (k == key) { // 找到了相同的key，则新值覆盖旧值，然后返回
+			e.value = value;
+			return;
+		}
+
+		if (k == null) { // Entry不为空，但key为null，代表key已被GC回收
+			replaceStaleEntry(key, value, i);
+			return;
+		}
+	}
+
+	// 执行到此代表哈希后的数组索引处没有Entry，可直接将key-value存储至该索引处
+	tab[i] = new Entry(key, value);
+	int sz = ++size; // 容量+1
+	if (!cleanSomeSlots(i, sz) &amp;&amp; sz &gt;= threshold) 
+		// 如果数组中不需要清除已被回收的元素，并且容量已达扩容的阈值，则对数组进行扩容
+		rehash();
+}
+</code></pre>
+<pre><code class="language-java">private void replaceStaleEntry(ThreadLocal&lt;?&gt; key, Object value,int staleSlot) {
+	Entry[] tab = table;
+	int len = tab.length;
+	Entry e;
+
+	int slotToExpunge = staleSlot;
+	//从staleSlot开始向上遍历
+	for (int i = prevIndex(staleSlot, len); //获取当前位置的前一个位置作为初始索引
+		 (e = tab[i]) != null; // 如果entry有值，进入循环体，如果为null则退出循环
+		 i = prevIndex(i, len)) // 获取前一个索引的值
+		if (e.get() == null) // 循环体，如果Entry不为null且key为null，则代表key已被GC回收，该索引处的Entry可被销毁
+			slotToExpunge = i; //记录可以被销毁的索引
+
+	//从staleSlot开始向下遍历
+	for (int i = nextIndex(staleSlot, len); //获取当前位置的下一个索引作为初始值
+		(e = tab[i]) != null; //如果entry有值，进入循环体，如果为null则退出循环
+		i = nextIndex(i, len)) { //获取下一个索引
+		ThreadLocal&lt;?&gt; k = e.get();
+
+		if (k == key) { //如果索引处的Entry.key和方法参数中的key相等
+			e.value = value;//新值覆盖旧值
+
+			tab[i] = tab[staleSlot];  //!!!!!!!此处代码意图还不是太明晰!!!!!!!
+			tab[staleSlot] = e;
+
+			if (slotToExpunge == staleSlot)
+				slotToExpunge = i;
+			cleanSomeSlots(expungeStaleEntry(slotToExpunge), len);
+			return;
+		}
+
+		if (k == null &amp;&amp; slotToExpunge == staleSlot)
+			slotToExpunge = i;
+	}
+
+	tab[staleSlot].value = null; //标记旧的Entry可被GC回收
+	tab[staleSlot] = new Entry(key, value); //记录新的Entry
+
+	if (slotToExpunge != staleSlot) 
+	// 如果slotToExpunge和staleSlot的值不相等，则代表哈希表中有需要被销毁的Entry，此时需要做清理Entry的操作
+		cleanSomeSlots(expungeStaleEntry(slotToExpunge), len);
+}
+
+</code></pre>
+<pre><code class="language-java">private boolean cleanSomeSlots(int i, int n) {
+	boolean removed = false; // 是否有被移除的Entry
+	Entry[] tab = table;
+	int len = tab.length;
+	// 先执行do，然后执行while，满足条件再执行do；如此往复
+	do {
+		i = nextIndex(i, len); //获取下一个索引
+		Entry e = tab[i]; //获取下一个索引处的Entry
+		if (e != null &amp;&amp; e.get() == null) { // 如果Entry不为null,但key为null,则该Entry可被销毁
+			n = len; // 控制遍历次数
+			removed = true; 
+			i = expungeStaleEntry(i); //删除该处索引的Entry
+
+		}
+	} while ( (n &gt;&gt;&gt;= 1) != 0); //每次n右移1位则等同于n除以2，！！为什么这样做有待考证！！
+	return removed; 
+}
+</code></pre>
+<ul>
+<li>i：一个已知的可用的Entry索引，从i+1处开始扫描</li>
+</ul>
+<pre><code class="language-java">private int expungeStaleEntry(int staleSlot) {
+	Entry[] tab = table;
+	int len = tab.length;
+
+	tab[staleSlot].value = null;
+	tab[staleSlot] = null; //把索引处的Entry置为null
+	size--; // size减1
+
+	// 从staleSlot+1开始向下遍历, 
+	// 如果发现有Entry.key为null, 则将该Entry置为null
+	// 如果Entry不为null, 则使用哈希值对其重新映射
+	Entry e;
+	int i;
+	for (i = nextIndex(staleSlot, len); // 从staleSlot+1开始
+		 (e = tab[i]) != null;  // Entry有值进入循环, 否则退出循环
+		 i = nextIndex(i, len)) { // 获取下一个索引, 向下遍历
+		ThreadLocal&lt;?&gt; k = e.get();
+		if (k == null) { // 如果key为null将Entry置为null
+			e.value = null;
+			tab[i] = null;
+			size--;
+		} else { // 如果key不为null, 对Entry rehash
+			int h = k.threadLocalHashCode &amp; (len - 1);
+			if (h != i) {
+				tab[i] = null;
+
+				while (tab[h] != null)
+					h = nextIndex(h, len); // 线性探测解决哈希冲突
+				tab[h] = e;
+			}
+		}
+	}
+	return i;
+}
+
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[选择排序]]></title>
         <id>https://wanyt.github.io/post/xuan-ze-pai-xu/</id>
