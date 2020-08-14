@@ -454,7 +454,7 @@ ul li {
 }
 .gt-post-content pre code {
   font-size: 13px;
-  font-family: Menlo, Monaco, 'Source Code Pro', Consolas, 'Courier New', monospace;
+  font-family: Consolas;
   padding: 1em;
   border-radius: 5px;
   line-height: 1.375;

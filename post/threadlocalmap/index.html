@@ -6,7 +6,7 @@
 
 <title>ThreadLocalMap | Yt100</title>
 
-<link rel="shortcut icon" href="https://wanyt.github.io/favicon.ico?v=1597309250387">
+<link rel="shortcut icon" href="https://wanyt.github.io/favicon.ico?v=1597373965737">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://wanyt.github.io/styles/main.css">
@@ -77,7 +77,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1597309250387" action="/search/index.html">
+            <form id="gridea-search-form" style="position: relative" data-update="1597373965737" action="/search/index.html">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
             </form>
@@ -98,9 +98,8 @@
                     
                 </div>
                 <div class="post-content">
-                    <blockquote>
-<p>线性探测法解决哈希冲突的典型实现</p>
-</blockquote>
+                    <p>线性探测法解决哈希冲突的典型实现</p>
+<!-- more -->
 <p>既然是Map那么它就是用来存储键值对的的数据结构。Java中常用的Map有HashMap、HashTable、ConcurrentHashMap等。ThreadLocalMap并没有实现Map接口，它不属于Java的集合体系，它是包级别可见，没有对开发者开放，仅供ThreadLocal和Thread使用。</p>
 <p>HashMap使用拉链法解决哈希冲突；ThreadLocalMap和HashTable一样使用线性探测法解决哈希冲突。</p>
 <p>为什么使用WeakReference?</p>
