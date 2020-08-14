@@ -453,8 +453,8 @@ ul li {
   margin-bottom: 18px;
 }
 .gt-post-content pre code {
-  font-size: 13px;
-  font-family: Consolas;
+  font-size: 25px;
+  font-family: 'JetBrains';
   padding: 1em;
   border-radius: 5px;
   line-height: 1.375;
