@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>synchronized :: Terminal</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="synchronized &amp;amp; volatile synchronized能够保证在同一时刻最多只有一个线程执行该段diamante，保证了并发安全的效果。
+用法：
+ 对象锁：包含方法锁（锁对象为this当前实例对象）和同步代码块锁（自己指定锁对象） 类锁：synchronized修饰静态方法，锁是当前类的class对象；由于每个类在JVM中只有一个class对象，那么类锁中的代码块在同一时刻仅有一个线程可操作性，且达到了全局同步的效果 " />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="/posts/text/" />
+
+
+
+
+<link rel="stylesheet" href="/assets/style.css">
+
+  <link rel="stylesheet" href="/assets/green.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="/img/apple-touch-icon-192x192.png">
+
+  <link rel="shortcut icon" href="/img/favicon/green.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+  
+    <meta name="twitter:site" content="" />
+  
+    <meta name="twitter:creator" content="" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="synchronized">
+<meta property="og:description" content="synchronized &amp;amp; volatile synchronized能够保证在同一时刻最多只有一个线程执行该段diamante，保证了并发安全的效果。
+用法：
+ 对象锁：包含方法锁（锁对象为this当前实例对象）和同步代码块锁（自己指定锁对象） 类锁：synchronized修饰静态方法，锁是当前类的class对象；由于每个类在JVM中只有一个class对象，那么类锁中的代码块在同一时刻仅有一个线程可操作性，且达到了全局同步的效果 " />
+<meta property="og:url" content="/posts/text/" />
+<meta property="og:site_name" content="Terminal" />
+
+  
+    <meta property="og:image" content="/img/favicon/green.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+  <meta property="article:published_time" content="2020-09-02 18:07:23 &#43;0800 CST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="green">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Yt100
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/showcase">Showcase</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/showcase">Showcase</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="/posts/text/">synchronized</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2020-09-02 
+      </span>
+    
+    
+  </div>
+
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <p>synchronized &amp; volatile
+synchronized能够保证在同一时刻最多只有一个线程执行该段diamante，保证了并发安全的效果。</p>
+<p>用法：</p>
+<ol>
+<li>对象锁：包含方法锁（锁对象为this当前实例对象）和同步代码块锁（自己指定锁对象）</li>
+<li>类锁：synchronized修饰静态方法，锁是当前类的class对象；由于每个类在JVM中只有一个class对象，那么类锁中的代码块在同一时刻仅有一个线程可操作性，且达到了全局同步的效果</li>
+</ol>
+<p>注意：</p>
+<ol>
+<li>一把锁只能被一个线程获取，其他线程只能等待</li>
+<li>只有使用通一把锁才会呈上上述效果</li>
+<li>释放锁有两种方式：代码执行完毕或抛出异常</li>
+<li>同步方法调用非同步方法，则线程不安全，因为非同步方法可被多个线程访问</li>
+</ol>
+<p>性质：</p>
+<ol>
+<li>可重入：同一个线程可以再次进入相同锁的diamante快</li>
+<li>原子性</li>
+<li>可见性</li>
+</ol>
+<p>原理：
+synchronized是Java类对象头中的字段，进入锁和释放锁是基于monitor实现的，monitor主要拥有两个指令，entrymonitor和exitmonitor，entry在同步代码块开始的位置，exit在同步代码块退出的位置，JVM保证在每个同步代码块中有entry和exit对应，可能有多个exit对应多个entry，一旦monitor被持有则monitor处于锁定状态。</p>
+<p>~<strong>反编译synchronized代码</strong>~
+~下面我们来通过命令看下 synchronized 关键字到底做了什么事情：首先用 cd 命令切换到 SynTest.java 类所在的路径，然后执行 javac SynTest.java，于是就会产生一个名为 SynTest.class 的字节码文件，然后我们执行 javap -verbose SynTest.class，就可以看到对应的反汇编内容。~</p>
+<p>monitorentry 让锁计数+1，monitorexit 让锁计数-1，锁计数为0则没有任何线程持有锁；</p>
+<p>线程获取锁时，会先检查锁计数</p>
+<ul>
+<li>如果为0，则线程获取到锁，计数+1</li>
+<li>如果线程已经获取到锁，则计数+1，进入代码块</li>
+<li>如果其他线程获取锁，检查计数，如果不为0，则等待</li>
+</ul>
+<p>缺陷：</p>
+<ol>
+<li>效率低，等待线程不能退出，只能等待</li>
+<li>无法获取锁是否已经获取成功</li>
+</ol>
+<p>synchronized 的背后正是利用 monitor 锁实现的。所以首先我们来看下获取和释放 monitor 锁的时机，每个 Java 对象都可以用作一个实现同步的锁，这个锁也被称为::内置锁::或 monitor 锁，获得 monitor 锁的唯一途径就是进入由这个锁保护的同步代码块或同步方法，线程在进入被 synchronized 保护的代码块之前，会自动获取锁，并且无论是正常路径退出，还是通过抛出异常退出，在退出的时候都会自动释放锁。</p>
+<h1 id="volatile">volatile<a href="#volatile" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>volatile是一种同步机制，比所更轻量，因为使用volatile并不会发生上下文切换。变量被修饰为volatile，那么JVM就知道这个变量可能会被并发修改。volatile做不到锁那样的原子保护。</p>
+<blockquote>
+<p>volatile不适用于a++，因为a++包含三个操作：读-改-写</p>
+</blockquote>
+<p>volatile使用的场合：</p>
+<ol>
+<li><strong>如何一个共享变量自始至终中只被各个线程赋值，而没有其他的操作，那么就可以用volatile来代替synchronized或者代替原子变量，因为赋值自身是有原子性的，而volatile有保证了可见性，所以就足以保证线程安全。</strong></li>
+<li>作为刷新之前变量（代码位置的前面）的触发器</li>
+</ol>
+<p>volatile的作用</p>
+<ol>
+<li>可见性：读取一个volatile变量之前，需要先让相应的本地缓存失效，这样就必须到主内存读取最新值，写一个volatile属性会立即刷入到主内存；</li>
+<li>它禁止指令重排序</li>
+</ol>
+<h2 id="volatile和synchronized的关系">volatile和synchronized的关系？<a href="#volatile和synchronized的关系" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>volatile是轻量级的synchronized：如果一个共享变量自始至终只被各个线程赋值，而没有其他的操作，那么就可以用volatile来代替synchronized或者代替原子变量，因为::赋值自身这个操作是原子性的，而volatile又保证了可见性::，所以就足以保证线程安全。</p>
+<blockquote>
+<p>比如，读取现在的状态在给变量赋值不是原子操作，不能使用volatile。</p>
+</blockquote>
+<p>volatile适用场景：</p>
+<ol>
+<li>某个线程修改了被多个线程共享的属性，其他线程可以立即得到修改后的值</li>
+<li>volatile的读写操作都是无锁的，不能代替synchronized，因为volatile不提供原子性和互斥性；因为无锁，所以不需要花费额外的时间获取锁和释放锁，所以它的使用成本低</li>
+<li>volatile只能使用在属性上，编译器不会对volatile变量做重排序</li>
+<li>volatile提供了可见性和happens-before，任何一个线程对volatile变量的修改都会立即对其他线程可见，它不会被线程缓存，线程始终从主存中读取volatile</li>
+<li>volatile 使得long和double的赋值是原子的</li>
+<li>volatile使得long和double的赋值是原子操作（long和double的赋值不是原子操作）</li>
+</ol>
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">Read other posts</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        <span class="button previous">
+            <a href="/posts/interrupt/">
+                <span class="button__icon">←</span>
+                <span class="button__text">interrupt.md</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="/posts/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%AC%94%E8%AE%B0-%E9%94%81%E7%9A%84%E7%A7%8D%E7%B1%BB/">
+                <span class="button__text"></span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="http://gohugo.io">Hugo</a></span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="/assets/main.js"></script>
+<script src="/assets/prism.js"></script>
+
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

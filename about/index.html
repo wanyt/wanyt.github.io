@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>About Me :: Terminal</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Kotlin扩展方法 #默认分类/Kotlin
+kotlin的扩展方法被解析成静态方法，那为什么在扩展方法中可以直接调用类的成员方法和成员变量呢？这不是很奇怪吗？kotlin使用了什么样的魔法可以让静态方法调用累的成员方法。
+编写ExtA.kt，然后添加成员方法testA()和扩展方法testB()：
+class ExtA { fun testA(){ print(“abcd”) } } fun ExtA.testB(){ testA() } 在扩展方法testB()中调用了成员方法testA()，编译没报错，并且能运行成功。kotlin肯定使用什么语法糖能在静态方法中调用成员方法。现在看一下testB()编译后的java代码：
+public static final void testB(@NotNull ExtA $this$testB) { Intrinsics.checkParameterIsNotNull($this$testB, &amp;quot;$this$testB&amp;quot;); $this$testB.testA(); } testB()确实被编译成静态方法了，但是无参的testB()变成了含参的testB(ExtA)，而testB()中调用testA()使用了参数的应用调用的。谜团差不多有解了，是因为成员引用被传递到扩展方法中，扩展方法调用了引用的成员方法。
+再创建ExtB.kt，在ExtB.kt中调用扩展方法testB()：
+class ExtB { fun main(){ val a = ExtA() a.testB() } } ExtB.kt编译后的java代码：
+public final class ExtB { public final void main() { ExtA a = new ExtA(); ExtsKt.testB(a); } } 这样看就很清晰了，kotlin的扩展方法就是语法糖，本质还是静态方法而已；但不得不说它就是很甜。" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="/about/" />
+
+
+
+
+<link rel="stylesheet" href="/assets/style.css">
+
+  <link rel="stylesheet" href="/assets/green.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="/img/apple-touch-icon-192x192.png">
+
+  <link rel="shortcut icon" href="/img/favicon/green.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+  
+    <meta name="twitter:site" content="" />
+  
+    <meta name="twitter:creator" content="" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="About Me">
+<meta property="og:description" content="Kotlin扩展方法 #默认分类/Kotlin
+kotlin的扩展方法被解析成静态方法，那为什么在扩展方法中可以直接调用类的成员方法和成员变量呢？这不是很奇怪吗？kotlin使用了什么样的魔法可以让静态方法调用累的成员方法。
+编写ExtA.kt，然后添加成员方法testA()和扩展方法testB()：
+class ExtA { fun testA(){ print(“abcd”) } } fun ExtA.testB(){ testA() } 在扩展方法testB()中调用了成员方法testA()，编译没报错，并且能运行成功。kotlin肯定使用什么语法糖能在静态方法中调用成员方法。现在看一下testB()编译后的java代码：
+public static final void testB(@NotNull ExtA $this$testB) { Intrinsics.checkParameterIsNotNull($this$testB, &amp;quot;$this$testB&amp;quot;); $this$testB.testA(); } testB()确实被编译成静态方法了，但是无参的testB()变成了含参的testB(ExtA)，而testB()中调用testA()使用了参数的应用调用的。谜团差不多有解了，是因为成员引用被传递到扩展方法中，扩展方法调用了引用的成员方法。
+再创建ExtB.kt，在ExtB.kt中调用扩展方法testB()：
+class ExtB { fun main(){ val a = ExtA() a.testB() } } ExtB.kt编译后的java代码：
+public final class ExtB { public final void main() { ExtA a = new ExtA(); ExtsKt.testB(a); } } 这样看就很清晰了，kotlin的扩展方法就是语法糖，本质还是静态方法而已；但不得不说它就是很甜。" />
+<meta property="og:url" content="/about/" />
+<meta property="og:site_name" content="Terminal" />
+
+  
+    <meta property="og:image" content="/img/favicon/green.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="green">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Yt100
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/showcase">Showcase</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/showcase">Showcase</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="/about/">About Me</a></h1>
+  <div class="post-meta">
+    
+    
+  </div>
+
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h1 id="kotlin扩展方法">Kotlin扩展方法<a href="#kotlin扩展方法" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>#默认分类/Kotlin</p>
+<p>kotlin的扩展方法被解析成静态方法，那为什么在扩展方法中可以直接调用类的成员方法和成员变量呢？这不是很奇怪吗？kotlin使用了什么样的魔法可以让静态方法调用累的成员方法。</p>
+<p>编写<code>ExtA.kt</code>，然后添加成员方法<code>testA()</code>和扩展方法<code>testB()</code>：</p>
+<pre><code>class ExtA {
+    fun testA(){
+        print(“abcd”)
+    }
+}
+
+fun ExtA.testB(){
+    testA()
+}
+</code></pre><p>在扩展方法<code>testB()</code>中调用了成员方法<code>testA()</code>，编译没报错，并且能运行成功。kotlin肯定使用什么语法糖能在静态方法中调用成员方法。现在看一下<code>testB()</code>编译后的java代码：</p>
+<pre><code>public static final void testB(@NotNull ExtA $this$testB) {
+   Intrinsics.checkParameterIsNotNull($this$testB, &quot;$this$testB&quot;);
+   $this$testB.testA();
+}
+</code></pre><p><code>testB()</code>确实被编译成静态方法了，但是无参的<code>testB()</code>变成了含参的<code>testB(ExtA)</code>，而<code>testB()</code>中调用<code>testA()</code>使用了参数的应用调用的。谜团差不多有解了，是因为成员引用被传递到扩展方法中，扩展方法调用了引用的成员方法。</p>
+<p>再创建<code>ExtB.kt</code>，在<code>ExtB.kt</code>中调用扩展方法<code>testB()</code>：</p>
+<pre><code>class ExtB {
+    fun main(){
+        val a = ExtA()
+        a.testB()
+    }
+}
+</code></pre><p><code>ExtB.kt</code>编译后的java代码：</p>
+<pre><code>public final class ExtB {
+   public final void main() {
+      ExtA a = new ExtA();
+      ExtsKt.testB(a);
+   }
+}
+</code></pre><p>这样看就很清晰了，kotlin的扩展方法就是语法糖，本质还是静态方法而已；但不得不说它就是很甜。</p>
+
+      </div></div>
+
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="http://gohugo.io">Hugo</a></span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="/assets/main.js"></script>
+<script src="/assets/prism.js"></script>
+
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
