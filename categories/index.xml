@@ -6,9 +6,19 @@
     <description>Recent content in Categories on Terminal</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
+    <lastBuildDate>Wed, 02 Sep 2020 18:07:23 +0800</lastBuildDate>
     
 	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>heihei</title>
+      <link>/categories/heihei/</link>
+      <pubDate>Wed, 02 Sep 2020 18:07:23 +0800</pubDate>
+      
+      <guid>/categories/heihei/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>

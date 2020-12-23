@@ -3,7 +3,17 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/posts/interrupt/</loc>
+    <loc>/categories/</loc>
+    <lastmod>2020-09-02T18:07:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/categories/heihei/</loc>
+    <lastmod>2020-09-02T18:07:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/hugo/</loc>
     <lastmod>2020-09-02T18:07:23+08:00</lastmod>
   </url>
   
@@ -13,7 +23,7 @@
   </url>
   
   <url>
-    <loc>/posts/text/</loc>
+    <loc>/tags/</loc>
     <lastmod>2020-09-02T18:07:23+08:00</lastmod>
   </url>
   
@@ -23,19 +33,17 @@
   </url>
   
   <url>
-    <loc>/posts/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%AC%94%E8%AE%B0-%E9%94%81%E7%9A%84%E7%A7%8D%E7%B1%BB/</loc>
+    <loc>/tags/test/</loc>
+    <lastmod>2020-09-02T18:07:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/posts/test/</loc>
+    <lastmod>2020-09-02T18:07:23+08:00</lastmod>
   </url>
   
   <url>
     <loc>/about/</loc>
-  </url>
-  
-  <url>
-    <loc>/categories/</loc>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
   </url>
   
 </urlset>
